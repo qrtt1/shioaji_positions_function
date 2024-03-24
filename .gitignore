@@ -324,3 +324,5 @@ piperider-getting-started
 tests/output*.md
 output/
 output.zip
+shioaji.log
+.env*

@@ -2,7 +2,8 @@ name: Provision AWS Lambda Function
 
 on:
   workflow_dispatch:
-
+  push:
+    tags: 'v*'
 
 jobs:
   provision:
@@ -22,6 +23,8 @@ jobs:
           TARGET_S3_BUCKET: ${{ secrets.TARGET_S3_BUCKET }}
           TARGET_S3_KEY: ${{ secrets.TARGET_S3_KEY }}
           TARGET_LAMBDA_FUNCTION: ${{ secrets.TARGET_LAMBDA_FUNCTION }}
+          TARGET_LAMBDA_FUNCTION_HANDLER: ${{ secrets.TARGET_LAMBDA_FUNCTION_HANDLER }}
+          TARGET_LAMBDA_ROLE: ${{ secrets.TARGET_LAMBDA_ROLE }}
         run: |
           [ -z "${AWS_ACCESS_KEY_ID}" ] && echo "AWS_ACCESS_KEY_ID is not set." && exit 1
           [ -z "${AWS_SECRET_ACCESS_KEY}" ] && echo "AWS_SECRET_ACCESS_KEY is not set." && exit 1
@@ -29,9 +32,8 @@ jobs:
           [ -z "${TARGET_S3_BUCKET}" ] && echo "TARGET_S3_BUCKET is not set." && exit 1
           [ -z "${TARGET_S3_KEY}" ] && echo "TARGET_S3_KEY is not set." && exit 1
           [ -z "${TARGET_LAMBDA_FUNCTION}" ] && echo "TARGET_LAMBDA_FUNCTION is not set." && exit 1
-          
-          ./dev-install.sh
-          pytest
+          [ -z "${TARGET_LAMBDA_FUNCTION_HANDLER}" ] && echo "TARGET_LAMBDA_FUNCTION_HANDLER is not set." && exit 1
+          [ -z "${TARGET_LAMBDA_ROLE}" ] && echo "TARGET_LAMBDA_ROLE is not set." && exit 1
 
           # Patch version
           echo "${GITHUB_REF:11}" > ./sinopac_stock/VERSION
@@ -39,4 +41,6 @@ jobs:
           # Package
           ./pack-for-lambda.sh
           aws s3 cp output.zip s3://${TARGET_S3_BUCKET}/${TARGET_S3_KEY}
-#          aws lambda update-function-code --function-name ${TARGET_LAMBDA_FUNCTION} --s3-bucket ${TARGET_S3_BUCKET} --s3-key ${TARGET_S3_KEY}
+          
+          # Create or update the Lambda Function
+          ./scripts/create-or-update-lambda-function.sh

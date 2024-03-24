@@ -1,4 +1,5 @@
-from typing import List
+import threading
+from typing import Dict, List
 
 import shioaji as sj
 from dotenv import load_dotenv
@@ -16,8 +17,8 @@ class APICredentials:
 
     @staticmethod
     def from_environment_variables():
-        api_key = os.getenv('SNIOPAC_API_KEY')
-        api_secret_key = os.getenv('SNIOPAC_API_SECRET_KEY')
+        api_key = os.getenv("SNIOPAC_API_KEY")
+        api_secret_key = os.getenv("SNIOPAC_API_SECRET_KEY")
         return APICredentials(api_key, api_secret_key)
 
 
@@ -45,18 +46,32 @@ class PositionData:
         return asdict(self)
 
 
-def fetch_positions():
-    cred = APICredentials.from_environment_variables()
+def fetch_positions(cred: APICredentials):
     api = sj.Shioaji(simulation=False)
-    result = api.login(cred.sniopac_api_key, cred.sniopac_api_secret_key)
-    positions: List[StockPosition] = api.list_positions(None, Unit.Share)
-    print(result)
+    try:
+        result = api.login(cred.sniopac_api_key, cred.sniopac_api_secret_key)
+        print("login status", result)
+        positions: List[StockPosition] = api.list_positions(None, Unit.Share)
+        return [PositionData.from_stock_position(x).to_dict() for x in positions]
+    finally:
+        api.logout()
 
-    for p in positions:
-        print(p)
-        print(PositionData.from_stock_position(p))
+
+lock = threading.Lock()
 
 
-if __name__ == '__main__':
+def callback(event, context):
+    cfg: Dict = event
+    with lock:
+        return fetch_positions(
+            APICredentials(
+                sniopac_api_key=cfg.get("sniopac_api_key"),
+                sniopac_api_secret_key=cfg.get("sniopac_api_secret_key"),
+            )
+        )
+
+
+if __name__ == "__main__":
     load_dotenv()
-    fetch_positions()
+    cred = APICredentials.from_environment_variables()
+    fetch_positions(cred)

@@ -19,7 +19,13 @@ setup(
     author="qrtt1",
     author_email="chingyichan.tw@gmail.com",
     packages=find_packages(),
-    install_requires=["requests", "beautifulsoup4", "boto3", "shioaji", "python-dotenv"],
+    install_requires=[
+        "requests",
+        "beautifulsoup4",
+        "boto3",
+        "shioaji",
+        "python-dotenv",
+    ],
     extras_require={
         "dev": [
             "pytest",
@@ -34,6 +40,6 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    package_data={"sinopac_stock": ["VERSION"]},
+    package_data={"sinopac_stock": ["VERSION", "data/*.json"]},
     python_requires=">=3.10",
 )

@@ -25,6 +25,8 @@ jobs:
           TARGET_LAMBDA_FUNCTION: ${{ secrets.TARGET_LAMBDA_FUNCTION }}
           TARGET_LAMBDA_FUNCTION_HANDLER: ${{ secrets.TARGET_LAMBDA_FUNCTION_HANDLER }}
           TARGET_LAMBDA_ROLE: ${{ secrets.TARGET_LAMBDA_ROLE }}
+          SNIOPAC_API_KEY: ${{ secrets.SNIOPAC_API_KEY }}
+          SNIOPAC_API_SECRET_KEY: ${{ secrets.SNIOPAC_API_SECRET_KEY }}
         run: |
           [ -z "${AWS_ACCESS_KEY_ID}" ] && echo "AWS_ACCESS_KEY_ID is not set." && exit 1
           [ -z "${AWS_SECRET_ACCESS_KEY}" ] && echo "AWS_SECRET_ACCESS_KEY is not set." && exit 1
@@ -34,9 +36,15 @@ jobs:
           [ -z "${TARGET_LAMBDA_FUNCTION}" ] && echo "TARGET_LAMBDA_FUNCTION is not set." && exit 1
           [ -z "${TARGET_LAMBDA_FUNCTION_HANDLER}" ] && echo "TARGET_LAMBDA_FUNCTION_HANDLER is not set." && exit 1
           [ -z "${TARGET_LAMBDA_ROLE}" ] && echo "TARGET_LAMBDA_ROLE is not set." && exit 1
+          [ -z "${SNIOPAC_API_KEY}" ] && echo "SNIOPAC_API_KEY is not set." && exit 1
+          [ -z "${SNIOPAC_API_SECRET_KEY}" ] && echo "SNIOPAC_API_SECRET_KEY is not set." && exit 1
 
           # Patch version
           echo "${GITHUB_REF:11}" > ./sinopac_stock/VERSION
+          
+          # Run Tests
+          ./dev-install.sh
+          pytest
           
           # Package
           ./pack-for-lambda.sh

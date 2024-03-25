@@ -1,4 +1,16 @@
-from sinopac_stock.utils import lookup_stock_name
+import os
+
+from sinopac_stock.utils import (
+    download_stock_infos,
+    lookup_stock_name,
+    stock_info_cache_file,
+)
+
+
+def test_update_cache():
+    download_stock_infos()
+    path = stock_info_cache_file()
+    assert os.stat(path).st_size != 0
 
 
 def test_find_the_stock_name():

@@ -69,8 +69,10 @@
         "s3:PutObject",
         "s3:GetObject"
       ],
-      "Resource": "arn:aws:s3:::qty.lambda/*"
+      "Resource": "arn:aws:s3:::foo.barbar/*"
     }
   ]
 }
 ```
+
+`Resource` 部分，請依需求調整，或使用 `*` 不限制位置。

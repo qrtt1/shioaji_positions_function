@@ -1,9 +1,11 @@
 ## 永豐金證券 Sinopac 報價函式
 
-這個專案包裝永豐金證券 Python API 為 AWS Lambda Function 作為日常查詢持股價格使用。主要的功能：
+這個專案包裝[永豐金證券 Python API](https://sinotrade.github.io/) 為 AWS Lambda Function 作為日常查詢持股價格使用。主要的功能：
 
 1. 使用 GitHub Action 自動部署
 2. 提供 AWS Lambda Function 查詢持股狀態
+
+呼叫方式請參閱 [README.USAGE.md](README.USAGE.md)
 
 ## .env 設定
 
@@ -86,3 +88,4 @@ $ gh secret set -f .env --repo foo/barbar
 ✓ Set Actions secret SNIOPAC_API_KEY for foo/barbar
 ✓ Set Actions secret TARGET_LAMBDA_FUNCTION_HANDLER for foo/barbar
 ```
+

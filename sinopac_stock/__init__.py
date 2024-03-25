@@ -45,14 +45,38 @@ class PositionData:
     def to_dict(self):
         return asdict(self)
 
+    def to_legacy_dict(self):
+        from sinopac_stock.utils import lookup_stock_name
 
-def fetch_positions(cred: APICredentials):
+        def convert(p: PositionData):
+
+            real_namt = int(p.quantity * p.last_price + 0.5)
+            origin_namt = int(p.quantity * p.price + 0.5)
+            namt = int(origin_namt + p.pnl)
+
+            ur_ratio = ((namt / origin_namt) - 1) * 100
+
+            return dict(
+                stock=p.code,
+                stocknm=lookup_stock_name(p.code),
+                qty=p.quantity,
+                mprice=p.last_price,
+                real_namt=real_namt,
+                namt=namt,
+                ur_ratio=ur_ratio,
+                unreal=int(p.pnl),
+            )
+
+        return convert(self)
+
+
+def fetch_positions(cred: APICredentials) -> List[PositionData]:
     api = sj.Shioaji(simulation=False)
     try:
         result = api.login(cred.sniopac_api_key, cred.sniopac_api_secret_key)
         print("login status", result)
         positions: List[StockPosition] = api.list_positions(None, Unit.Share)
-        return [PositionData.from_stock_position(x).to_dict() for x in positions]
+        return [PositionData.from_stock_position(x) for x in positions]
     finally:
         api.logout()
 
@@ -63,12 +87,15 @@ lock = threading.Lock()
 def callback(event, context):
     cfg: Dict = event
     with lock:
-        return fetch_positions(
+        positions = fetch_positions(
             APICredentials(
                 sniopac_api_key=cfg.get("sniopac_api_key"),
                 sniopac_api_secret_key=cfg.get("sniopac_api_secret_key"),
             )
         )
+        if cfg.get("legacy", False):
+            return [x.to_legacy_dict() for x in positions]
+        return [x.to_dict() for x in positions]
 
 
 if __name__ == "__main__":

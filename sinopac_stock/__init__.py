@@ -94,7 +94,7 @@ def callback(event, context):
             )
         )
         if cfg.get("legacy", False):
-            return [x.to_legacy_dict() for x in positions]
+            return dict(data=[x.to_legacy_dict() for x in positions])
         return [x.to_dict() for x in positions]
 
 

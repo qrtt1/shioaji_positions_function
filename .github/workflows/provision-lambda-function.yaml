@@ -56,3 +56,9 @@ jobs:
           
           export TARGET_LAMBDA_FUNCTION=${PREFIX_TARGET_LAMBDA_FUNCTION}_0
           ./scripts/create-or-update-lambda-function.sh
+
+          export TARGET_LAMBDA_FUNCTION=${PREFIX_TARGET_LAMBDA_FUNCTION}_1
+          ./scripts/create-or-update-lambda-function.sh
+          
+          export TARGET_LAMBDA_FUNCTION=${PREFIX_TARGET_LAMBDA_FUNCTION}_2
+          ./scripts/create-or-update-lambda-function.sh

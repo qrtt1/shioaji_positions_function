@@ -49,7 +49,6 @@ class PositionData:
         from sinopac_stock.utils import lookup_stock_name
 
         def convert(p: PositionData):
-
             real_namt = int(p.quantity * p.last_price + 0.5)
             origin_namt = int(p.quantity * p.price + 0.5)
             namt = int(origin_namt + p.pnl)
@@ -77,6 +76,8 @@ def fetch_positions(cred: APICredentials) -> List[PositionData]:
         print("login status", result)
         positions: List[StockPosition] = api.list_positions(None, Unit.Share)
         return [PositionData.from_stock_position(x) for x in positions]
+    except Exception as e:
+        print(e)
     finally:
         api.logout()
 
@@ -101,4 +102,4 @@ def callback(event, context):
 if __name__ == "__main__":
     load_dotenv()
     cred = APICredentials.from_environment_variables()
-    fetch_positions(cred)
+    print(fetch_positions(cred))

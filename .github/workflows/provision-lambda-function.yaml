@@ -22,7 +22,7 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
           TARGET_S3_BUCKET: ${{ secrets.TARGET_S3_BUCKET }}
           TARGET_S3_KEY: ${{ secrets.TARGET_S3_KEY }}
-          TARGET_LAMBDA_FUNCTION: ${{ secrets.TARGET_LAMBDA_FUNCTION }}
+          PREFIX_TARGET_LAMBDA_FUNCTION: ${{ secrets.TARGET_LAMBDA_FUNCTION }}
           TARGET_LAMBDA_FUNCTION_HANDLER: ${{ secrets.TARGET_LAMBDA_FUNCTION_HANDLER }}
           TARGET_LAMBDA_ROLE: ${{ secrets.TARGET_LAMBDA_ROLE }}
           SNIOPAC_API_KEY: ${{ secrets.SNIOPAC_API_KEY }}
@@ -33,7 +33,7 @@ jobs:
           [ -z "${AWS_DEFAULT_REGION}" ] && echo "AWS_DEFAULT_REGION is not set." && exit 1
           [ -z "${TARGET_S3_BUCKET}" ] && echo "TARGET_S3_BUCKET is not set." && exit 1
           [ -z "${TARGET_S3_KEY}" ] && echo "TARGET_S3_KEY is not set." && exit 1
-          [ -z "${TARGET_LAMBDA_FUNCTION}" ] && echo "TARGET_LAMBDA_FUNCTION is not set." && exit 1
+          [ -z "${PREFIX_TARGET_LAMBDA_FUNCTION}" ] && echo "PREFIX_TARGET_LAMBDA_FUNCTION is not set." && exit 1
           [ -z "${TARGET_LAMBDA_FUNCTION_HANDLER}" ] && echo "TARGET_LAMBDA_FUNCTION_HANDLER is not set." && exit 1
           [ -z "${TARGET_LAMBDA_ROLE}" ] && echo "TARGET_LAMBDA_ROLE is not set." && exit 1
           [ -z "${SNIOPAC_API_KEY}" ] && echo "SNIOPAC_API_KEY is not set." && exit 1
@@ -51,4 +51,8 @@ jobs:
           aws s3 cp output.zip s3://${TARGET_S3_BUCKET}/${TARGET_S3_KEY}
           
           # Create or update the Lambda Function
+          export TARGET_LAMBDA_FUNCTION=${PREFIX_TARGET_LAMBDA_FUNCTION}
+          ./scripts/create-or-update-lambda-function.sh
+          
+          export TARGET_LAMBDA_FUNCTION=${PREFIX_TARGET_LAMBDA_FUNCTION}_0
           ./scripts/create-or-update-lambda-function.sh

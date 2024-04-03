@@ -13,7 +13,7 @@ def _get_version():
 
 
 setup(
-    name="stock_info",
+    name="shioaji_positions_function",
     version="0.1.0",
     description="Stock position fetcher from Sinopac.",
     author="qrtt1",
@@ -23,7 +23,8 @@ setup(
         "requests",
         "beautifulsoup4",
         "boto3",
-        "shioaji",
+        "shioaji; sys_platform != 'linux'",
+        "shioaji==1.2.2; sys_platform == 'linux'",
         "python-dotenv",
     ],
     extras_require={

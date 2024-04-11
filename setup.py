@@ -33,6 +33,7 @@ setup(
             "pytest-dotenv",
             "black",
             "isort",
+            "tox",
         ]
     },
     classifiers=[

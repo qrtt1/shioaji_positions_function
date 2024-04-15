@@ -69,18 +69,24 @@ class PositionData:
         return convert(self)
 
 
+api = sj.Shioaji(simulation=False)
+has_login = False
+
+
 def fetch_positions(cred: APICredentials) -> List[PositionData]:
-    api = sj.Shioaji(simulation=False)
+    # We use the function for a specific account, only login once
+    global has_login
+
     try:
-        result = api.login(cred.sniopac_api_key, cred.sniopac_api_secret_key)
-        print("login status", result)
+        if not has_login:
+            result = api.login(cred.sniopac_api_key, cred.sniopac_api_secret_key)
+            print("login status", result)
+            has_login = True
         positions: List[StockPosition] = api.list_positions(None, Unit.Share)
         print("list_positions", positions)
         return [PositionData.from_stock_position(x) for x in positions]
     except BaseException as e:
         print(e)
-    finally:
-        api.logout()
 
 
 lock = threading.Lock()

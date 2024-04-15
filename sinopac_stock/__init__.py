@@ -75,8 +75,9 @@ def fetch_positions(cred: APICredentials) -> List[PositionData]:
         result = api.login(cred.sniopac_api_key, cred.sniopac_api_secret_key)
         print("login status", result)
         positions: List[StockPosition] = api.list_positions(None, Unit.Share)
+        print("list_positions", positions)
         return [PositionData.from_stock_position(x) for x in positions]
-    except Exception as e:
+    except BaseException as e:
         print(e)
     finally:
         api.logout()

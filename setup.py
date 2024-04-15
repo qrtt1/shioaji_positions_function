@@ -23,8 +23,7 @@ setup(
         "requests",
         "beautifulsoup4",
         "boto3",
-        "shioaji; sys_platform != 'linux'",
-        "shioaji==1.2.2; sys_platform == 'linux'",
+        "shioaji",
         "python-dotenv",
     ],
     extras_require={
@@ -33,7 +32,6 @@ setup(
             "pytest-dotenv",
             "black",
             "isort",
-            "tox",
         ]
     },
     classifiers=[

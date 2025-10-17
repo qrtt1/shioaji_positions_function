@@ -53,7 +53,10 @@ class PositionData:
             origin_namt = int(p.quantity * p.price + 0.5)
             namt = int(origin_namt + p.pnl)
 
-            ur_ratio = ((namt / origin_namt) - 1) * 100
+            if origin_namt == 0:
+                ur_ratio = 0.0
+            else:
+                ur_ratio = ((namt / origin_namt) - 1) * 100
 
             return dict(
                 stock=p.code,

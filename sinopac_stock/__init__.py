@@ -87,7 +87,9 @@ def fetch_positions(cred: APICredentials) -> List[PositionData]:
             has_login = True
         positions: List[StockPosition] = api.list_positions(None, Unit.Share)
         print("list_positions", positions)
-        return [PositionData.from_stock_position(x) for x in positions]
+        # TODO: Temporary filter to skip stock code 009813
+        filtered_positions = [x for x in positions if x.code != "009813"]
+        return [PositionData.from_stock_position(x) for x in filtered_positions]
     except BaseException as e:
         print(e)
 

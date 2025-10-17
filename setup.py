@@ -23,7 +23,7 @@ setup(
         "requests",
         "beautifulsoup4",
         "boto3",
-        "shioaji",
+        "shioaji==1.2.8",
         "python-dotenv",
     ],
     extras_require={

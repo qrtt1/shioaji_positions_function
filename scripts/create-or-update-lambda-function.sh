@@ -13,5 +13,7 @@ then
 else
   echo "Lambda function already exists, updating"
   aws lambda update-function-code --function-name ${TARGET_LAMBDA_FUNCTION} --s3-bucket ${TARGET_S3_BUCKET} --s3-key ${TARGET_S3_KEY}
+  echo "Waiting for function update to complete..."
+  aws lambda wait function-updated --function-name ${TARGET_LAMBDA_FUNCTION}
   aws lambda update-function-configuration --function-name ${TARGET_LAMBDA_FUNCTION} --runtime python3.12
 fi
